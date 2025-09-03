@@ -61,7 +61,7 @@ export default function Hero() {
         Jiu-Jitsu para <strong>iniciantes, Kids e competidores</strong> em
         Salvador. Treinos pela manhã, tarde e noite em{" "}
         <strong>Bruxo Team Matriz (Stella Maris)</strong>,{" "}
-        <strong>Stiep</strong> e <strong>Itapuã</strong>.
+        <strong>Stiep</strong> e <strong>Itapuã</strong><strong>Itacaré</strong>.
         <span className="ml-1 font-semibold">Primeira aula gratuita.</span>
       </p>
 
