@@ -1,0 +1,58 @@
+/* app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+
+html { @apply scroll-smooth; }
+body { @apply bg-background text-white antialiased; }
+
+a { @apply text-white/90 hover:text-white transition-colors; }
+hr, .divider { @apply border-t border-border; }
+
+/* ---------- TIPOGRAFIA & RITMO GLOBAL ---------- */
+@layer base {
+  /* texto padrão confortável */
+  p { @apply text-base md:text-lg leading-8 text-white/90; }
+  strong, b { @apply text-white font-semibold; }
+  ul, ol { @apply my-4 pl-5 space-y-2 text-white/90; }
+  li { @apply leading-8; }
+}
+
+@layer components {
+  /* Títulos utilitários */
+  .h1 { @apply text-4xl md:text-5xl font-extrabold leading-tight tracking-tight text-white; }
+  .h2 { @apply text-3xl md:text-4xl font-bold leading-tight text-white; }
+  .h3 { @apply text-xl md:text-2xl font-semibold leading-snug text-white; }
+
+  /* Parágrafo utilitário */
+  .p { @apply text-base md:text-lg leading-8 text-white/90; }
+
+  /* Texto longo com largura ideal */
+  .rich-text { @apply max-w-[68ch] text-base md:text-lg leading-8 text-white/90; }
+  .rich-text > * + * { @apply mt-5 md:mt-6; }
+
+  /* Container padrão */
+  .container { @apply max-w-7xl mx-auto px-4 md:px-6 lg:px-8; }
+
+  /* Helpers visuais */
+  .grid-gap { @apply gap-6 md:gap-8; }
+
+  /* Componentes */
+  .card { @apply bg-surface border border-border rounded-2xl shadow-subtle; }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium
+           bg-brand-red hover:bg-brand-redHover text-white transition-colors;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium
+           border border-white/20 text-white/90 hover:text-white hover:border-white/40 transition-colors;
+  }
+  .badge { @apply inline-flex items-center px-2 py-1 text-xs rounded-md bg-white/10; }
+}
+
+/* Seções: compensa header fixo + cria respiro automático entre filhos */
+.section { @apply scroll-mt-24; }
+.section > * + * { @apply mt-8 md:mt-10; }
