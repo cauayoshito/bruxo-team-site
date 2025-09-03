@@ -13,10 +13,10 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Bruxo Team Jiu-Jitsu",
-  description: "Treinos em Stiep, Itapuã e Stella. Disciplina, técnica e união.",
+  description: "Treinos em Matriz (Stella Maris), Stiep, Itapuã, Itacaré.Disciplina, técnica e união.",
   openGraph: {
     title: "Bruxo Team Jiu-Jitsu",
-    description: "Unidades em Stiep, Itapuã e Stella.",
+    description: "Unidades em Matriz (Stella Maris), Stiep, Itapuã, Itacaré.",
     images: ["/logo-bruxo.png"], // suba em /public/og.jpg
     locale: "pt_BR",
     type: "website",
