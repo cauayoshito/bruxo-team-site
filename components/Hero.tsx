@@ -24,7 +24,12 @@ export default function Hero() {
   const waMsg = `Olá! Quero fazer uma aula experimental na ${unit.name}.`;
   const waUrl = waLink(wa, waMsg);
 
-  const horariosHref = `/unidades/${unit.slug}#horarios`;
+  // ❗ Link com hash precisa ser UrlObject quando typedRoutes está ativo
+  const horariosHref = {
+    pathname: `/unidades/${unit.slug}`,
+    hash: "horarios",
+  } as const;
+
   const mapUrl = unit.mapQuery
     ? `https://www.google.com/maps?q=${encodeURIComponent(unit.mapQuery)}`
     : undefined;
