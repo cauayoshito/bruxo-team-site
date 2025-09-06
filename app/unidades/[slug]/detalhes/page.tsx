@@ -25,11 +25,7 @@ export default function DetalhesPage({ params }: Props) {
   return (
     <main>
       {/* Header usa o nome sobrescrito quando for a matriz */}
-      <UnitHeader
-        unit={headerUnit}
-        slides={unit.gallery?.map((g) => g.src)}
-        showMeta
-      />
+     <UnitHeader unit={headerUnit} />
 
       {/* Restante permanece igual */}
       <UnitInstructors unit={unit} />
