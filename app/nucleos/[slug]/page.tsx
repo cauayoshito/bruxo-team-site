@@ -49,13 +49,13 @@ export default function NucleoPage({ params }: Props) {
         </ol>
       </nav>
 
-      {/* Header completo do NÚCLEO (mesmo estilo do projeto) */}
+      {/* Header COMPLETO do núcleo (com Whats/Instagram/Mapa) */}
       <ProjectHeader project={project} />
 
       {/* Sobre */}
       {project.description && (
         <section className="container py-8">
-          <h2 className="h2">Sobre</h2>
+          <h2 className="h2">Sobre o Núcleo</h2>
           <p className="p mt-2 opacity-90 whitespace-pre-line">
             {project.description}
           </p>
@@ -86,7 +86,7 @@ export default function NucleoPage({ params }: Props) {
                     />
                   ) : (
                     <div className="absolute inset-0 grid place-items-center text-white/40">
-                      sem foto
+                      Sem foto
                     </div>
                   )}
                 </div>
