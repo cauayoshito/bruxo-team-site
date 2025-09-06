@@ -30,7 +30,7 @@ export default function DetalhesPage({ params }: Props) {
       {/* Restante permanece igual */}
       <UnitInstructors unit={unit} />
       <UnitSchedule rows={rows} />
-      <UnitGallery unit={unit} />
+      <UnitGallery gallery={unit.gallery ?? []} />
     </main>
   );
 }
