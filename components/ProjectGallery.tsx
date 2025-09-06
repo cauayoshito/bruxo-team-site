@@ -14,26 +14,24 @@ export default function ProjectGallery({ project, title = "Galeria" }: Props) {
   const items = project.gallery ?? [];
   if (items.length === 0) return null;
 
-  // Igual à galeria que você quer: 1 slide por vez (todas as larguras) e autoplay
+  // Carrossel 1 por vez com autoplay
   const [sliderRef] = useKeenSlider<HTMLDivElement>(
     {
       loop: true,
       renderMode: "performance",
-      slides: { perView: 1, spacing: 12 }, // sempre 1
+      slides: { perView: 1, spacing: 12 },
     },
     [
       (slider) => {
         let timeout: ReturnType<typeof setTimeout>;
         let mouseOver = false;
 
-        function clearNextTimeout() {
-          clearTimeout(timeout);
-        }
-        function nextTimeout() {
+        const clearNextTimeout = () => clearTimeout(timeout);
+        const nextTimeout = () => {
           clearTimeout(timeout);
           if (mouseOver) return;
           timeout = setTimeout(() => slider.next(), 3000);
-        }
+        };
 
         slider.on("created", () => {
           slider.container.addEventListener("mouseover", () => {
@@ -46,6 +44,7 @@ export default function ProjectGallery({ project, title = "Galeria" }: Props) {
           });
           nextTimeout();
         });
+
         slider.on("dragStarted", clearNextTimeout);
         slider.on("animationEnded", nextTimeout);
         slider.on("updated", nextTimeout);
@@ -62,9 +61,8 @@ export default function ProjectGallery({ project, title = "Galeria" }: Props) {
           <div
             key={`${g.src || "img"}-${i}`}
             className="keen-slider__slide relative overflow-hidden rounded-xl bg-white/5"
-            // Aspect ratio mais “cinema” (parecido com o que você mostrou).
-            // Se preferir 4/3, troque para "4 / 3".
-            style={{ aspectRatio: "16 / 9" }}
+            // Mantém aspecto mas dá fallback com paddingTop para browsers bugados
+            style={{ aspectRatio: "16 / 9", paddingTop: "56.25%" }}
           >
             {g.src ? (
               <Image
