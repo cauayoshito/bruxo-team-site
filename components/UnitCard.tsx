@@ -1,31 +1,37 @@
 // components/UnitCard.tsx
-import Link from "next/link";
+"use client";
+
 import Image from "next/image";
-import type { UrlObject } from "url";
+import Link from "next/link";
+import type { Route } from "next";
 import type { UnitDetail } from "@/data/units";
+import { waLink } from "@/lib/whatsapp";
 
 type Props = {
-  unit: UnitDetail;
-  /** Quando informado, substitui o href padrão do card */
-  hrefOverride?: string;
-  /** Texto extra (opcional) para aparecer embaixo do título */
-  subtitle?: string;
+  unit: UnitDetail & { subtitle?: string };
+  /**
+   * preview  -> botão único "Ver informações" (Home)
+   * full     -> WhatsApp + Instagram + Ver informações (/unidades/[slug])
+   */
+  variant?: "preview" | "full";
+  /** Rota de destino do "Ver informações". Se não vier, uso /unidades/[slug]/detalhes */
+  href?: Route;
 };
 
-export default function UnitCard({ unit, hrefOverride, subtitle }: Props) {
-  // Compatível com experimental.typedRoutes do Next/Vercel
-  const hrefObj: UrlObject = hrefOverride
-    ? { pathname: hrefOverride }
-    : { pathname: `/unidades/${unit.slug}` };
+export default function UnitCard({ unit, variant = "preview", href }: Props) {
+  const detailsHref =
+    href ?? (`/unidades/${unit.slug}/detalhes` as Route);
 
-  const mapDescription =
-    subtitle ??
-    unit.description ??
-    `Unidade ${unit.shortName ?? unit.name} da Bruxo Team.`;
+  const waHref = unit.whatsapp
+    ? waLink(
+        unit.whatsapp,
+        `Olá! Quero informações sobre a unidade ${unit.name}.`
+      )
+    : null;
 
   return (
     <article className="rounded-2xl bg-white/5 overflow-hidden">
-      <Link href={hrefObj} className="block">
+      <Link href={detailsHref} className="block">
         <div className="relative w-full" style={{ aspectRatio: "4 / 3" }}>
           {unit.heroImage ? (
             <Image
@@ -33,11 +39,11 @@ export default function UnitCard({ unit, hrefOverride, subtitle }: Props) {
               alt={unit.name}
               fill
               className="object-cover"
-              sizes="(max-width:768px) 100vw, 600px"
+              sizes="(max-width:768px) 100vw, 33vw"
               priority={false}
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-white/40">
+            <div className="absolute inset-0 grid place-items-center text-white/40">
               sem imagem
             </div>
           )}
@@ -45,20 +51,56 @@ export default function UnitCard({ unit, hrefOverride, subtitle }: Props) {
       </Link>
 
       <div className="p-4">
-        <Link href={hrefObj} className="block">
-          <h3 className="text-lg font-semibold">{unit.name}</h3>
-          <p className="mt-1 text-sm opacity-80">{mapDescription}</p>
-        </Link>
+        <h3 className="text-lg font-semibold">{unit.name}</h3>
+        <p className="text-sm opacity-80 mt-1">
+          {unit.description ??
+            unit.subtitle ??
+            "Selecione para ver horários, instrutores, galeria e contato."}
+        </p>
 
-        {/* Home/listas/hubs: apenas "Ver informações" (CTA completo fica na página interna) */}
-        <div className="mt-3">
-          <Link
-            href={hrefObj}
-            className="inline-block rounded-lg bg-white/10 hover:bg-white/15 px-3 py-1.5 text-sm font-medium"
-          >
-            Ver informações
-          </Link>
-        </div>
+        {/* Ações */}
+        {variant === "preview" ? (
+          <div className="mt-3">
+            <Link
+              href={detailsHref}
+              className="btn-secondary inline-flex items-center"
+            >
+              Ver informações
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-3 flex gap-2 flex-wrap">
+            {waHref && (
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+              >
+                WhatsApp
+              </a>
+            )}
+
+            {unit.instagram && (
+              <a
+                href={unit.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-md px-4 py-2 text-sm font-medium text-white"
+                style={{
+                  background:
+                    "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)",
+                }}
+              >
+                Instagram
+              </a>
+            )}
+
+            <Link href={detailsHref} className="btn-secondary">
+              Ver informações
+            </Link>
+          </div>
+        )}
       </div>
     </article>
   );
