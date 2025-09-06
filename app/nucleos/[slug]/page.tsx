@@ -1,4 +1,3 @@
-// app/nucleos/[slug]/page.tsx
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -28,29 +27,29 @@ export default function NucleoPage({ params }: Props) {
       <nav className="container pt-4 pb-2 text-sm text-white/60">
         <ol className="flex items-center gap-2">
           <li>
-            <Link className="hover:text-white/80" href="/unidades">
+            <Link href="/unidades" className="hover:text-white/80">
               Unidades
             </Link>
           </li>
-          {parentUnit ? (
+          {parentUnit && (
             <>
               <li>›</li>
               <li>
                 <Link
-                  className="hover:text-white/80"
                   href={`/unidades/${parentUnit.slug}`}
+                  className="hover:text-white/80"
                 >
                   {parentUnit.name}
                 </Link>
               </li>
             </>
-          ) : null}
+          )}
           <li>›</li>
           <li className="text-white/80">{project.name}</li>
         </ol>
       </nav>
 
-      {/* Header do núcleo usando ProjectHeader (inclui Instagram) */}
+      {/* Header completo do NÚCLEO (mesmo estilo do projeto) */}
       <ProjectHeader project={project} />
 
       {/* Sobre */}
@@ -77,7 +76,7 @@ export default function NucleoPage({ params }: Props) {
                   className="relative w-full overflow-hidden rounded-xl bg-white/5"
                   style={{ aspectRatio: "4 / 5" }}
                 >
-                  {inst.image && (
+                  {inst.image ? (
                     <Image
                       src={inst.image}
                       alt={inst.name}
@@ -85,6 +84,10 @@ export default function NucleoPage({ params }: Props) {
                       className="object-cover"
                       sizes="(max-width:768px) 100vw, 300px"
                     />
+                  ) : (
+                    <div className="absolute inset-0 grid place-items-center text-white/40">
+                      sem foto
+                    </div>
                   )}
                 </div>
                 <div className="mt-3">
@@ -117,7 +120,7 @@ export default function NucleoPage({ params }: Props) {
                 className="relative overflow-hidden rounded-xl bg-white/5"
                 style={{ aspectRatio: "4 / 3" }}
               >
-                {g.src && (
+                {g.src ? (
                   <Image
                     src={g.src}
                     alt={g.alt || `Imagem ${i + 1}`}
@@ -125,6 +128,10 @@ export default function NucleoPage({ params }: Props) {
                     className="object-cover"
                     sizes="(max-width:768px) 100vw, 400px"
                   />
+                ) : (
+                  <div className="absolute inset-0 grid place-items-center text-white/40">
+                    sem imagem
+                  </div>
                 )}
               </div>
             ))}
