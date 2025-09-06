@@ -7,12 +7,22 @@ const DAY_LABEL: Record<DayKey, string> = {
   qua: "Qua",
   qui: "Qui",
   sex: "Sex",
-  sab: "Sab",
+  sab: "Sáb",
   dom: "Dom",
 };
 
-function isSessionArray(v: unknown): v is Session[] {
-  return Array.isArray(v);
+// Nem todos os schedules usam as mesmas chaves.
+// Este helper torna o render tolerante a variações (label/title/name e time/hour).
+type AnySession = Session & {
+  label?: string;
+  title?: string;
+  name?: string;
+  time?: string;
+  hour?: string;
+};
+
+function isSessionArray(v: unknown): v is AnySession[] {
+  return Array.isArray(v) && v.every((x) => x && typeof x === "object");
 }
 
 export default function ScheduleTable({ schedule }: { schedule: GymSchedule }) {
@@ -36,27 +46,32 @@ export default function ScheduleTable({ schedule }: { schedule: GymSchedule }) {
             let content: React.ReactNode;
 
             if (isSessionArray(value)) {
-              // Renderiza cada sessão (label/time) em linhas
               content =
                 value.length > 0 ? (
                   <ul className="space-y-1">
-                    {value.map((s, i) => (
-                      <li key={i} className="flex items-center justify-between">
-                        <span className="opacity-80">{s.label}</span>
-                        <span className="font-medium">{s.time}</span>
-                      </li>
-                    ))}
+                    {value.map((raw, i) => {
+                      const s = raw as unknown as AnySession;
+                      const label = s.label ?? s.title ?? s.name ?? "Aula";
+                      const time = s.time ?? s.hour ?? "";
+                      return (
+                        <li
+                          key={i}
+                          className="flex items-center justify-between"
+                        >
+                          <span className="opacity-80">{label}</span>
+                          <span className="font-medium">{time}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : (
                   <span className="opacity-60">-</span>
                 );
             } else if (typeof value === "string") {
-              // Compatibilidade caso seja string (ex.: "19:00 - Mista")
               content = value || <span className="opacity-60">-</span>;
             } else if (value == null) {
               content = <span className="opacity-60">-</span>;
             } else {
-              // Qualquer formato inesperado vira "-"
               content = <span className="opacity-60">-</span>;
             }
 
