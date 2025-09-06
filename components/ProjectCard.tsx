@@ -1,65 +1,106 @@
 // components/ProjectCard.tsx
-// Card padronizado para projetos e também para a "sede" (unidade) via hrefOverride.
-import Link from "next/link";
-import Image from "next/image";
-import type { UrlObject } from "url";
+"use client";
 
-type MinimalProject = {
-  slug: string;
-  name: string;
-  description?: string;
-  heroImage?: string;
-  whatsapp?: string;
-  instagram?: string;
-};
+import Image from "next/image";
+import Link from "next/link";
+import type { Route } from "next";
+import type { ProjectDetail } from "@/data/projects";
+import { waLink } from "@/lib/whatsapp";
 
 type Props = {
-  project: MinimalProject;
-  /** Quando definido, o card aponta para este href (ex.: "/projetos/stella-maris-mma" ou "/unidades/itapua/detalhes") */
-  hrefOverride?: string;
+  project: ProjectDetail & { subtitle?: string };
+  /**
+   * preview -> botão único "Ver informações"
+   * full    -> WhatsApp + Instagram + Ver informações
+   */
+  variant?: "preview" | "full";
+  /** Rota de destino do "Ver informações" (ex.: /nucleos/slug ou /projetos/slug) */
+  href?: Route;
 };
 
-export default function ProjectCard({ project, hrefOverride }: Props) {
-  // Para evitar o erro com "typedRoutes" do Next, passamos um UrlObject no href
-  const hrefObj: UrlObject = hrefOverride
-    ? { pathname: hrefOverride }
-    : { pathname: `/nucleos/${project.slug}` };
+export default function ProjectCard({
+  project,
+  variant = "full",
+  href,
+}: Props) {
+  const detailsHref =
+    href ?? (`/nucleos/${project.slug}` as Route);
 
-  const cover = project.heroImage;
+  const waHref = project.whatsapp
+    ? waLink(
+        project.whatsapp,
+        `Olá! Quero informações sobre o projeto ${project.name}.`
+      )
+    : null;
 
   return (
-    <div className="rounded-2xl bg-white/5 p-3 hover:bg-white/10 transition">
-      <Link href={hrefObj} className="block">
+    <article className="rounded-2xl bg-white/5 overflow-hidden">
+      <Link href={detailsHref} className="block">
         <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-white/5">
-          {cover && (
+          {project.heroImage ? (
             <Image
-              src={cover}
+              src={project.heroImage}
               alt={project.name}
               fill
               className="object-cover"
-              sizes="(max-width:768px) 100vw, 400px"
-              priority={false}
+              sizes="(max-width:768px) 100vw, 33vw"
             />
-          )}
-        </div>
-
-        <div className="mt-3">
-          <h3 className="text-lg font-semibold leading-snug">{project.name}</h3>
-          {project.description && (
-            <p className="text-sm text-white/70 mt-1">{project.description}</p>
+          ) : (
+            <div className="absolute inset-0 grid place-items-center text-white/40">
+              sem imagem
+            </div>
           )}
         </div>
       </Link>
 
-      {/* Ação principal no card (home/listas): apenas "Ver informações" */}
-      <div className="mt-3">
-        <Link
-          href={hrefObj}
-          className="inline-block rounded-lg bg-white/10 hover:bg-white/15 px-3 py-1.5 text-sm font-medium"
-        >
-          Ver informações
-        </Link>
+      <div className="p-4">
+        <h3 className="text-lg font-semibold">{project.name}</h3>
+        <p className="text-sm opacity-80 mt-1">
+          {project.description ??
+            project.subtitle ??
+            "Selecione para ver horários, instrutores, galeria e contato."}
+        </p>
+
+        {variant === "preview" ? (
+          <div className="mt-3">
+            <Link href={detailsHref} className="btn-secondary">
+              Ver informações
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-3 flex gap-2 flex-wrap">
+            {waHref && (
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+              >
+                WhatsApp
+              </a>
+            )}
+
+            {project.instagram && (
+              <a
+                href={project.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-md px-4 py-2 text-sm font-medium text-white"
+                style={{
+                  background:
+                    "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)",
+                }}
+              >
+                Instagram
+              </a>
+            )}
+
+            <Link href={detailsHref} className="btn-secondary">
+              Ver informações
+            </Link>
+          </div>
+        )}
       </div>
-    </div>
+    </article>
   );
 }
