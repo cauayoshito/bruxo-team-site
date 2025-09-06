@@ -3,49 +3,39 @@
 import Image from "next/image";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
+import type { UnitDetail } from "@/data/units";
 
-type GalleryItem = { src: string; alt?: string; width?: number; height?: number };
-
-export default function UnitGallery({ gallery }: { gallery: GalleryItem[] }) {
-  if (!gallery || gallery.length === 0) return null;
+export default function UnitGallery({ unit }: { unit: UnitDetail }) {
+  if (!unit.gallery || unit.gallery.length === 0) return null;
 
   const [sliderRef] = useKeenSlider<HTMLDivElement>(
     {
       loop: true,
+      slides: { perView: 1, spacing: 16 },
       renderMode: "performance",
-      slides: { perView: 1, spacing: 12 },
-      breakpoints: {
-        "(min-width: 640px)": { slides: { perView: 2, spacing: 16 } },
-        "(min-width: 1024px)": { slides: { perView: 3, spacing: 16 } },
-      },
     },
     [
       (slider) => {
-        let timeout: ReturnType<typeof setTimeout>;
-        let mouseOver = false;
-
-        const clearNextTimeout = () => clearTimeout(timeout);
-        const nextTimeout = () => {
-          clearTimeout(timeout);
-          if (mouseOver) return;
-          timeout = setTimeout(() => slider.next(), 3000);
+        let t: ReturnType<typeof setTimeout>;
+        let over = false;
+        const clear = () => clearTimeout(t);
+        const next = () => {
+          clear();
+          if (over) return;
+          t = setTimeout(() => slider.next(), 3000);
         };
-
         slider.on("created", () => {
           slider.container.addEventListener("mouseover", () => {
-            mouseOver = true;
-            clearNextTimeout();
+            over = true; clear();
           });
           slider.container.addEventListener("mouseout", () => {
-            mouseOver = false;
-            nextTimeout();
+            over = false; next();
           });
-          nextTimeout();
+          next();
         });
-
-        slider.on("dragStarted", clearNextTimeout);
-        slider.on("animationEnded", nextTimeout);
-        slider.on("updated", nextTimeout);
+        slider.on("dragStarted", clear);
+        slider.on("animationEnded", next);
+        slider.on("updated", next);
       },
     ]
   );
@@ -53,19 +43,21 @@ export default function UnitGallery({ gallery }: { gallery: GalleryItem[] }) {
   return (
     <section className="container py-8">
       <h2 className="h2 mb-4">Galeria</h2>
+
       <div ref={sliderRef} className="keen-slider">
-        {gallery.map((g, i) => (
+        {unit.gallery.map((g, i) => (
           <div
-            key={`${g.src || "img"}-${i}`}
+            key={(g.src ?? "img") + i}
             className="keen-slider__slide relative overflow-hidden rounded-xl bg-white/5"
-            style={{ aspectRatio: "4 / 3" }}
+            // Fallback: mantém aspect-ratio em browsers antigos
+            style={{ aspectRatio: "4 / 3", paddingTop: "75%" }}
           >
             <Image
               src={g.src}
               alt={g.alt || `Imagem ${i + 1}`}
               fill
               className="object-cover"
-              sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority={i === 0}
             />
           </div>
