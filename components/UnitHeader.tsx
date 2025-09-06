@@ -1,23 +1,18 @@
-import Link from "next/link";
+// components/UnitHeader.tsx
 import Image from "next/image";
 import type { UnitDetail } from "@/data/units";
 import { waLink } from "@/lib/whatsapp";
 
-/**
- * Header de UNIDADE com o mesmo visual/comportamento do ProjectHeader:
- * - Capa (heroImage)
- * - Título, descrição, endereço
- * - CTAs: WhatsApp (se houver), Instagram (se houver), Ver no mapa (se houver)
- *
- * Não usa hooks nem props extras (server-safe).
- */
-export default function UnitHeader({ unit }: { unit: UnitDetail }) {
-  const waHref = unit.whatsapp
-    ? waLink(unit.whatsapp, `Olá! Gostaria de informações da ${unit.name}.`)
-    : null;
+type Props = { unit: UnitDetail };
 
-  const mapHref = unit.mapQuery && unit.mapQuery.trim()
-    ? `https://www.google.com/maps?q=${encodeURIComponent(unit.mapQuery)}`
+export default function UnitHeader({ unit }: Props) {
+  const mapHref =
+    unit.mapQuery && unit.mapQuery.trim()
+      ? `https://www.google.com/maps?q=${encodeURIComponent(unit.mapQuery)}`
+      : null;
+
+  const waHref = unit.whatsapp
+    ? waLink(unit.whatsapp, `Olá! Quero informações sobre a ${unit.name}.`)
     : null;
 
   return (
@@ -58,21 +53,21 @@ export default function UnitHeader({ unit }: { unit: UnitDetail }) {
 
         {(waHref || unit.instagram || mapHref) && (
           <div className="mt-4 flex gap-3 flex-wrap">
-            {/* WhatsApp */}
+            {/* WhatsApp (EXTERNO) */}
             {waHref && (
-              <Link
+              <a
                 className="btn-primary"
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Falar no WhatsApp
-              </Link>
+              </a>
             )}
 
-            {/* Instagram (mesmo botão estilizado do ProjectHeader) */}
+            {/* Instagram (EXTERNO) */}
             {unit.instagram && (
-              <Link
+              <a
                 href={unit.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -92,19 +87,19 @@ export default function UnitHeader({ unit }: { unit: UnitDetail }) {
                   <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3a6 6 0 100 12 6 6 0 000-12zm0 2a4 4 0 110 8 4 4 0 010-8zm5.5-.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0z" />
                 </svg>
                 Instagram
-              </Link>
+              </a>
             )}
 
-            {/* Mapa */}
+            {/* Ver no mapa (EXTERNO) */}
             {mapHref && (
-              <Link
+              <a
                 className="btn-secondary"
                 href={mapHref}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Ver no mapa
-              </Link>
+              </a>
             )}
           </div>
         )}
