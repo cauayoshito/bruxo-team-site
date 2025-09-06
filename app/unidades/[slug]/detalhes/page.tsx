@@ -1,4 +1,3 @@
-// app/unidades/[slug]/detalhes/page.tsx
 import { notFound } from "next/navigation";
 import { UNITS_INDEX, type UnitSlug } from "@/data/units";
 import { SCHEDULES_BY_UNIT } from "@/data/schedule";
@@ -15,7 +14,7 @@ export default function DetalhesPage({ params }: Props) {
   const unit = UNITS_INDEX[params.slug];
   if (!unit) return notFound();
 
-  // Aqui forçamos o título da página de detalhes da matriz para "Bruxo Team Matriz"
+  // Força o nome exibido quando for a matriz
   const headerUnit =
     unit.slug === "matriz" ? { ...unit, name: "Bruxo Team Matriz" } : unit;
 
@@ -24,14 +23,9 @@ export default function DetalhesPage({ params }: Props) {
 
   return (
     <main>
-      {/* Header usa o nome sobrescrito quando for a matriz */}
-      <UnitHeader
-        unit={headerUnit}
-        slides={unit.gallery?.map((g) => g.src)}
-        showMeta
-      />
+      {/* Header no mesmo estilo do ProjectHeader */}
+      <UnitHeader unit={headerUnit} />
 
-      {/* Restante permanece igual */}
       <UnitInstructors unit={unit} />
       <UnitSchedule rows={rows} />
       <UnitGallery unit={unit} />
