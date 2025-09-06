@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { UNITS_INDEX, type UnitSlug } from "@/data/units";
+import { UNITS_INDEX, type UnitSlug, type UnitDetail } from "@/data/units";
 import { SCHEDULES_BY_UNIT } from "@/data/schedule";
 import { toScheduleRows } from "@/lib/schedule";
 import UnitHeader from "@/components/UnitHeader";
@@ -14,8 +14,8 @@ export default function DetalhesPage({ params }: Props) {
   const unit = UNITS_INDEX[params.slug];
   if (!unit) return notFound();
 
-  // Força o nome exibido quando for a matriz
-  const headerUnit =
+  // Na página de DETALHES da matriz o título deve ser "Bruxo Team Matriz".
+  const headerUnit: UnitDetail =
     unit.slug === "matriz" ? { ...unit, name: "Bruxo Team Matriz" } : unit;
 
   const gymSchedule = SCHEDULES_BY_UNIT[params.slug];
@@ -23,9 +23,10 @@ export default function DetalhesPage({ params }: Props) {
 
   return (
     <main>
-      {/* Header no mesmo estilo do ProjectHeader */}
+      {/* Header simples: APENAS o que o componente aceita (unit) */}
       <UnitHeader unit={headerUnit} />
 
+      {/* Seções completas */}
       <UnitInstructors unit={unit} />
       <UnitSchedule rows={rows} />
       <UnitGallery unit={unit} />
