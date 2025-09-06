@@ -39,6 +39,7 @@ export const scheduleStella: GymSchedule = {
     { title: "MISTA", time: "20:15" },
   ],
   sab: [{ title: "OPEN-MAT", time: "10:00" }],
+  dom: [], // <- adicionado
 };
 
 // ---------- BRUXO TEAM — STIEP ----------
@@ -57,6 +58,7 @@ export const scheduleStiep: GymSchedule = {
   ],
   sex: [],
   sab: [],
+  dom: [], // <- adicionado
 };
 
 // ---------- BRUXO TEAM — ITAPUÃ ----------
@@ -67,6 +69,7 @@ export const scheduleItapua: GymSchedule = {
   qui: [{ title: "MISTA", time: "20:00–21:20" }],
   sex: [],
   sab: [],
+  dom: [], // <- adicionado
 };
 
 // ---------- BRUXO TEAM — ITACARÉ ----------
@@ -100,6 +103,7 @@ export const scheduleItacare: GymSchedule = {
     { title: "MISTA", time: "19:00" },
   ],
   sab: [{ title: "OPEN-MAT", time: "08:00", note: "Treino coletivo" }],
+  dom: [], // <- adicionado
 };
 
 // ---------- MAPA POR UNIDADE ----------
@@ -107,5 +111,5 @@ export const SCHEDULES_BY_UNIT: Record<UnitSlug, GymSchedule> = {
   matriz: scheduleStella, // Matriz usa a grade de Stella
   stiep: scheduleStiep,
   itapua: scheduleItapua,
-  itacare: scheduleItacare, // ✅ incluído
+  itacare: scheduleItacare,
 };
