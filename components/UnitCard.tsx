@@ -3,26 +3,26 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Route } from "next";
 import type { UnitDetail } from "@/data/units";
-import { waLink } from "@/lib/whatsapp";
 
 type Props = {
   unit: UnitDetail;
-  /** sobrescreve o href padrão do card */
+  /** para forçar o link do card */
   hrefOverride?: Route;
-  /** preview: apenas “Ver informações”; default: CTAs (Whats/IG) */
-  variant?: "preview" | "default";
+  /** preview = só “Ver informações” | full = + botões Whats/IG */
+  variant?: "preview" | "full";
 };
 
 export default function UnitCard({
   unit,
   hrefOverride,
-  variant = "default",
+  variant = "preview",
 }: Props) {
-  const href = (hrefOverride ?? (`/unidades/${unit.slug}` as Route)) as Route;
+  const href = hrefOverride ?? (`/unidades/${unit.slug}/detalhes` as Route);
+  const hasActions = variant === "full";
 
   const waHref = unit.whatsapp
-    ? waLink(unit.whatsapp, `Olá! Gostaria de informações da ${unit.name}.`)
-    : null;
+    ? (`https://wa.me/${unit.whatsapp.replace(/\D/g, "")}` as Route)
+    : undefined;
 
   return (
     <article className="rounded-2xl bg-white/5 overflow-hidden">
@@ -35,7 +35,6 @@ export default function UnitCard({
               fill
               className="object-cover"
               sizes="(max-width:768px) 100vw, 400px"
-              priority={false}
             />
           ) : (
             <div className="absolute inset-0 grid place-items-center text-white/40">
@@ -43,44 +42,46 @@ export default function UnitCard({
             </div>
           )}
         </div>
+
+        <div className="p-4">
+          <h3 className="text-lg font-semibold leading-snug">
+            {unit.name}
+          </h3>
+          {unit.description && (
+            <p className="text-sm text-white/70 mt-1">{unit.description}</p>
+          )}
+        </div>
       </Link>
 
-      <div className="p-4">
-        <h3 className="text-lg font-semibold">{unit.name}</h3>
-        {unit.description && (
-          <p className="text-sm opacity-80 mt-1">{unit.description}</p>
-        )}
-
-        {/* Rodapé do card */}
-        <div className="mt-3 flex gap-2 flex-wrap">
-          {variant === "preview" ? (
-            <Link href={href} className="btn-secondary">
-              Ver informações
-            </Link>
-          ) : (
-            <>
-              {waHref && (
-                <a
-                  href={waHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary"
-                >
-                  WhatsApp
-                </a>
-              )}
-              {unit.instagram && (
-                <a
-                  href={unit.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary"
-                >
-                  Instagram
-                </a>
-              )}
-            </>
+      {/* ações do card (full) */}
+      <div className="px-4 pb-4">
+        <div className="flex flex-wrap gap-2">
+          {hasActions && waHref && (
+            <a
+              className="btn-primary"
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp
+            </a>
           )}
+
+          {hasActions && unit.instagram && (
+            <a
+              className="btn-secondary"
+              href={unit.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Instagram
+            </a>
+          )}
+
+          {/* sempre mostra “Ver informações” */}
+          <Link href={href} className="btn-secondary">
+            Ver informações
+          </Link>
         </div>
       </div>
     </article>
