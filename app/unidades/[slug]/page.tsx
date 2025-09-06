@@ -1,5 +1,6 @@
 // app/unidades/[slug]/page.tsx
 import { notFound } from "next/navigation";
+import type { Route } from "next";
 import { UNITS_INDEX, type UnitSlug } from "@/data/units";
 import { getProjectsByParentUnit } from "@/data/projects";
 import UnitCard from "@/components/UnitCard";
@@ -18,8 +19,7 @@ export default function Page({ params }: Props) {
   const displayTitle =
     unit.slug === "matriz" ? "Unidade Stella Maris" : unit.name;
 
-  // No HUB da matriz, o card da própria sede aparece como “Bruxo Team Matriz”
-  // e com uma descrição curta de preview
+  // No HUB da matriz, o card da própria sede deve aparecer como "Bruxo Team Matriz"
   const sedeCardData =
     unit.slug === "matriz"
       ? {
@@ -30,6 +30,8 @@ export default function Page({ params }: Props) {
             "Unidade Stella Maris da Bruxo Team. Clique para ver informações completas.",
         }
       : unit;
+
+  const sedeHref = (`/unidades/${unit.slug}/detalhes` as Route);
 
   return (
     <main>
@@ -42,20 +44,15 @@ export default function Page({ params }: Props) {
       <section className="container py-10">
         <h2 className="h2">Núcleos</h2>
         <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Card da própria unidade → leva para a página completa da unidade */}
-          <UnitCard
-            unit={sedeCardData as any}
-            hrefOverride={`/unidades/${unit.slug}/detalhes`}
-            variant="preview"
-          />
+          {/* card da própria unidade (leva para a página completa da unidade) */}
+          <UnitCard unit={sedeCardData as any} hrefOverride={sedeHref} variant="preview" />
 
-          {/* Cards dos filhos */}
+          {/* cards dos filhos */}
           {childProjects.map((project) => {
             // Itapuã → projetos; demais (ex.: Stella Maris/“matriz”) → núcleos
-            const href =
-              unit.slug === "itapua"
-                ? `/projetos/${project.slug}`
-                : `/nucleos/${project.slug}`;
+            const href = (unit.slug === "itapua"
+              ? `/projetos/${project.slug}`
+              : `/nucleos/${project.slug}`) as Route;
 
             // garante breve descrição no card (se faltar)
             const projectForCard = {
@@ -70,7 +67,6 @@ export default function Page({ params }: Props) {
                 key={project.slug}
                 project={projectForCard as any}
                 hrefOverride={href}
-                variant="preview"
               />
             );
           })}
