@@ -19,7 +19,6 @@ const itemsHome: HomeItem[] = [
 // páginas absolutas
 const itemsPages: PageItem[] = [
   { href: "/competicao" as Route, label: "Competição" },
-  { href: "/projetos-sociais" as Route, label: "Projetos Sociais" },
   { href: "/faq" as Route, label: "FAQ" },
 ];
 

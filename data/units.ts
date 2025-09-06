@@ -1,7 +1,7 @@
 // --------------------------------------
 // Dias da semana (chaves do cronograma)
 // --------------------------------------
-export type DayKey = "seg" | "ter" | "qua" | "qui" | "sex" | "sab";
+export type DayKey = "seg" | "ter" | "qua" | "qui" | "sex" | "sab" | "dom";
 
 // --------------------------------------
 // Nomes oficiais das aulas (padronizados)
@@ -15,7 +15,8 @@ export type ClassLabel =
   | "Competição"
   | "60+"
   | "Open Mat"
-  | "Avançado";
+  | "Avançado"
+  | "MMA";
 
 // --------------------------------------
 // Linha de horário (já padronizada)
@@ -83,36 +84,40 @@ export type UnitDetail = {
 export const UNITS: UnitDetail[] = [
   {
     slug: "matriz",
-    name: "Unidade Matriz",
-    shortName: "Matriz",
+    // ▼ Renomeada para mostrar “Unidade Stella Maris” na home e listagens
+    name: "Unidade Stella Maris",
+    shortName: "Stella Maris",
     featured: true,
-    description: "A unidade principal da Bruxo Team.",
+    description: "Unidade principal da Bruxo Team .",
     seo: {
-      title: "Unidade Matriz — Bruxo Team",
-      description: "Conheça a unidade Matriz da Bruxo Team.",
+      title: "Unidade Stella Maris — Bruxo Team",
+      description: "Conheça a Unidade Stella Maris (Matriz) da Bruxo Team.",
     },
     heroImage: "/matriz.jpg",
     mapQuery:
-      "Unidade Matriz Bruxo Team, Alameda Dilson Jatahy Fonseca 858 - Stella Maris, Salvador - BA",
+      "Unidade Stella Maris Bruxo Team, Alameda Dilson Jatahy Fonseca 858 - Stella Maris, Salvador - BA",
     address: "Alameda Dilson Jatahy Fonseca, 858 - Stella Maris",
     city: "Salvador",
     state: "BA",
     whatsapp: "5571991843706",
     instagram: "https://instagram.com/bruxoteam_matriz",
     gallery: [
-      { src: "/m1.jpg", alt: "Bruxo Team — Matriz (fachada)" },
-      { src: "/m2.jpg", alt: "Bruxo Team — Matriz (tatame 1)" },
-      { src: "/matriz.jpg", alt: "Bruxo Team — Matriz (aula em andamento)" },
-      { src: "/m4.jpg", alt: "Bruxo Team — Matriz (fachada)" },
-      { src: "/m5.jpg", alt: "Bruxo Team — Matriz (tatame 1)" },
-      { src: "/m6.jpg", alt: "Bruxo Team — Matriz (aula em andamento)" },
-      { src: "/m7.jpg", alt: "Bruxo Team — Matriz (fachada)" },
-      { src: "/m8.jpg", alt: "Bruxo Team — Matriz (tatame 1)" },
-      { src: "/m9.jpg", alt: "Bruxo Team — Matriz (aula em andamento)" },
+      { src: "/m1.jpg", alt: "Bruxo Team — Stella Maris (fachada)" },
+      { src: "/m2.jpg", alt: "Bruxo Team — Stella Maris (tatame 1)" },
+      {
+        src: "/matriz.jpg",
+        alt: "Bruxo Team — Stella Maris (aula em andamento)",
+      },
+      { src: "/m4.jpg", alt: "Bruxo Team — Stella Maris (fachada)" },
+      { src: "/m5.jpg", alt: "Bruxo Team — Stella Maris (tatame 1)" },
+      { src: "/m6.jpg", alt: "Bruxo Team — Stella Maris (aula em andamento)" },
+      { src: "/m7.jpg", alt: "Bruxo Team — Stella Maris (fachada)" },
+      { src: "/m8.jpg", alt: "Bruxo Team — Stella Maris (tatame 1)" },
+      { src: "/m9.jpg", alt: "Bruxo Team — Stella Maris (aula em andamento)" },
     ],
     instructors: [
       { name: "Tiago Bruxo", role: "Mestre", image: "/bruxo.jpeg" },
-      { name: "Jean Ribeiro", role: "Professor", image: "/jotape.jpeg" }, // ← ajustado
+      { name: "Jean Ribeiro", role: "Professor", image: "/jotape.jpeg" },
     ],
   },
   {
@@ -125,8 +130,8 @@ export const UNITS: UnitDetail[] = [
       description: "Conheça a unidade Stiep da Bruxo Team.",
     },
     heroImage: "/stiep.jpeg",
-    mapQuery: "Rua Arthur Fraga 374 - Vale dos Rios, Salvador - BA",
-    address: "Rua Arthur Fraga, 374 - Vale dos Rios",
+    mapQuery: "Rua Arthur Fraga 274 - Vale dos Rios, Salvador - BA",
+    address: "Rua Arthur Fraga, 274 - Vale dos Rios",
     city: "Salvador",
     state: "BA",
     whatsapp: "5571992813525",

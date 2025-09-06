@@ -2,7 +2,7 @@
 import type { UnitSlug } from "@/data/units";
 
 export type Session = { title: string; time: string; note?: string };
-export type DayKey = "seg" | "ter" | "qua" | "qui" | "sex" | "sab";
+export type DayKey = "seg" | "ter" | "qua" | "qui" | "sex" | "sab" | "dom";
 export type GymSchedule = Record<DayKey, Session[]>;
 
 // ---------- BRUXO TEAM — STELLA (Matriz) ----------
@@ -43,19 +43,13 @@ export const scheduleStella: GymSchedule = {
 
 // ---------- BRUXO TEAM — STIEP ----------
 export const scheduleStiep: GymSchedule = {
-  seg: [
-    { title: "MISTA", time: "07:00–09:00" },
-    { title: "MISTA", time: "20:00–22:00" },
-  ],
+  seg: [{ title: "MISTA", time: "20:00–22:00" }],
   ter: [
     { title: "KIDS", time: "18:00–19:00" },
     { title: "Feminino", time: "19:00–20:00" },
     { title: "NO-GI", time: "20:00–22:00" },
   ],
-  qua: [
-    { title: "MISTA", time: "07:00–09:00" },
-    { title: "MISTA", time: "20:00–22:00" },
-  ],
+  qua: [{ title: "MISTA", time: "20:00–22:00" }],
   qui: [
     { title: "KIDS", time: "18:00–19:00" },
     { title: "Feminino", time: "19:00–20:00" },
@@ -80,34 +74,32 @@ export const scheduleItacare: GymSchedule = {
   seg: [
     { title: "MISTA", time: "12:00" },
     { title: "MISTA", time: "19:00" },
-    { title: "KIDS",  time: "10:00" },
-    { title: "KIDS",  time: "16:00–16:45" }, // BABY
-    { title: "KIDS",  time: "18:00" },       // KIDS 1
+    { title: "KIDS", time: "10:00" },
+    { title: "KIDS", time: "16:00–16:45" }, // BABY
+    { title: "KIDS", time: "18:00" }, // KIDS 1
   ],
   ter: [
     { title: "MISTA", time: "06:00" },
-    { title: "KIDS",  time: "15:00–16:00" }, // INFANTIL 11–15
-    { title: "KIDS",  time: "18:00–19:00" }, // KIDS 2
+    { title: "KIDS", time: "15:00–16:00" }, // INFANTIL 11–15
+    { title: "KIDS", time: "18:00–19:00" }, // KIDS 2
   ],
   qua: [
     { title: "MISTA", time: "12:00" },
     { title: "MISTA", time: "19:00" },
-    { title: "KIDS",  time: "10:00" },
-    { title: "KIDS",  time: "16:00–16:45" }, // BABY
-    { title: "KIDS",  time: "18:00" },       // KIDS 1
+    { title: "KIDS", time: "10:00" },
+    { title: "KIDS", time: "16:00–16:45" }, // BABY
+    { title: "KIDS", time: "18:00" }, // KIDS 1
   ],
   qui: [
     { title: "MISTA", time: "06:00" },
-    { title: "KIDS",  time: "15:00–16:00" }, // INFANTIL 11–15
-    { title: "KIDS",  time: "18:00–19:00" }, // KIDS 2
+    { title: "KIDS", time: "15:00–16:00" }, // INFANTIL 11–15
+    { title: "KIDS", time: "18:00–19:00" }, // KIDS 2
   ],
   sex: [
     { title: "MISTA", time: "12:00" },
     { title: "MISTA", time: "19:00" },
   ],
-  sab: [
-    { title: "OPEN-MAT", time: "08:00", note: "Treino coletivo" },
-  ],
+  sab: [{ title: "OPEN-MAT", time: "08:00", note: "Treino coletivo" }],
 };
 
 // ---------- MAPA POR UNIDADE ----------

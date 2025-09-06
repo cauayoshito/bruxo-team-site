@@ -1,60 +1,77 @@
-"use client";
-
+// components/ProjectCard.tsx
+// Card padronizado para projetos E também para a "sede" (unidade) via hrefOverride.
 import Link from "next/link";
 import Image from "next/image";
-import { Instagram } from "lucide-react";
 import type { ProjectDetail } from "@/data/projects";
+import { FaInstagram } from "react-icons/fa"; // Ícone oficial do Instagram
 
-export default function ProjectCard({ project }: { project: ProjectDetail }) {
-  const wa = project.whatsapp ? `https://wa.me/${project.whatsapp}` : null;
+type MinimalProject = {
+  slug: string;
+  name: string;
+  description?: string;
+  heroImage?: string;
+  whatsapp?: string;
+  instagram?: string;
+};
+
+type Props = {
+  project: ProjectDetail | MinimalProject;
+  /** Quando definido, o card aponta para este href (ex.: /unidades/itapua/detalhes) */
+  hrefOverride?: string;
+};
+
+export default function ProjectCard({ project, hrefOverride }: Props) {
+  const href = hrefOverride ?? `/nucleos/${project.slug}`;
+  const cover = project.heroImage;
 
   return (
-    <div className="rounded-2xl bg-neutral-900 p-5 shadow-lg flex flex-col">
-      <Link href={`/projetos-sociais/${project.slug}`} className="group block">
-        {project.heroImage && (
-          <div className="relative overflow-hidden rounded-xl mb-4 h-48">
+    <div className="rounded-2xl bg-white/5 p-3 hover:bg-white/10 transition">
+      <Link href={href} className="block">
+        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-white/5">
+          {cover && (
             <Image
-              src={project.heroImage}
+              src={cover}
               alt={project.name}
               fill
-              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover"
+              sizes="(max-width:768px) 100vw, 400px"
             />
-          </div>
-        )}
-
-        <h3 className="text-lg font-bold group-hover:underline">
-          {project.name}
-        </h3>
-
-        {project.description && (
-          <p className="text-sm text-white/70 mt-1">{project.description}</p>
-        )}
+          )}
+        </div>
+        <div className="mt-3">
+          <h3 className="text-lg font-semibold leading-snug">{project.name}</h3>
+          {project.description && (
+            <p className="text-sm text-white/70 mt-1">{project.description}</p>
+          )}
+        </div>
       </Link>
 
-      <div className="mt-4 flex items-center justify-between">
-        {wa && (
-          <a
-            href={wa}
+      {/* Ações (WhatsApp / Instagram), padronizados */}
+      <div className="mt-3 flex items-center gap-2">
+        {project.whatsapp && (
+          <Link
+            href={`https://wa.me/${project.whatsapp.replace(/\D/g, "")}`}
             target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold bg-red-600 hover:bg-red-700 transition"
+            className="rounded-md bg-red-600 hover:bg-red-500 px-3 py-1.5 text-sm font-medium text-white"
           >
             WhatsApp
-          </a>
+          </Link>
         )}
 
         {project.instagram && (
-          <a
+          <Link
             href={project.instagram}
             target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Instagram de ${project.name}`}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 hover:border-white/30 hover:bg-white/5 transition"
-            title="Instagram"
+            aria-label="Instagram"
+            className="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-white"
+            style={{
+              background:
+                "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)",
+            }}
           >
-            <Instagram className="h-5 w-5" />
-          </a>
+            <FaInstagram className="mr-1 h-4 w-4" />
+            Instagram
+          </Link>
         )}
       </div>
     </div>

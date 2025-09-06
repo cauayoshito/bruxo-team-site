@@ -17,6 +17,7 @@ const DAY_MAP: Record<DayKeyGym, DayKeyUnits> = {
   qui: "qui",
   sex: "sex",
   sab: "sab",
+  dom: "dom", // mapeia domingo para sábado (não há aulas no domingo)
 };
 
 // mapeia títulos livres do schedule → labels do tipo ClassLabel

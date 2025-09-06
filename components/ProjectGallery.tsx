@@ -1,28 +1,85 @@
-// components/ProjectGallery.tsx
 "use client";
 
 import Image from "next/image";
+import { useKeenSlider } from "keen-slider/react";
+import "keen-slider/keen-slider.min.css";
 import type { ProjectDetail } from "@/data/projects";
 
-export default function ProjectGallery({ project }: { project: ProjectDetail }) {
-  if (!project.gallery || project.gallery.length === 0) return null;
+type Props = {
+  project: Pick<ProjectDetail, "gallery">;
+  title?: string;
+};
+
+export default function ProjectGallery({ project, title = "Galeria" }: Props) {
+  const items = project.gallery ?? [];
+  if (items.length === 0) return null;
+
+  // Igual à galeria que você quer: 1 slide por vez (todas as larguras) e autoplay
+  const [sliderRef] = useKeenSlider<HTMLDivElement>(
+    {
+      loop: true,
+      renderMode: "performance",
+      slides: { perView: 1, spacing: 12 }, // sempre 1
+    },
+    [
+      (slider) => {
+        let timeout: ReturnType<typeof setTimeout>;
+        let mouseOver = false;
+
+        function clearNextTimeout() {
+          clearTimeout(timeout);
+        }
+        function nextTimeout() {
+          clearTimeout(timeout);
+          if (mouseOver) return;
+          timeout = setTimeout(() => slider.next(), 3000);
+        }
+
+        slider.on("created", () => {
+          slider.container.addEventListener("mouseover", () => {
+            mouseOver = true;
+            clearNextTimeout();
+          });
+          slider.container.addEventListener("mouseout", () => {
+            mouseOver = false;
+            nextTimeout();
+          });
+          nextTimeout();
+        });
+        slider.on("dragStarted", clearNextTimeout);
+        slider.on("animationEnded", nextTimeout);
+        slider.on("updated", nextTimeout);
+      },
+    ]
+  );
 
   return (
-    <section id="galeria" className="container pb-16">
-      <h2 className="h2">Galeria</h2>
-      <div className="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {project.gallery.map((g, idx) => (
+    <section className="container py-8">
+      <h2 className="h2 mb-4">{title}</h2>
+
+      <div ref={sliderRef} className="keen-slider">
+        {items.map((g, i) => (
           <div
-            key={g.src + idx}
-            className="relative w-full overflow-hidden rounded-xl aspect-[4/3] bg-black"
+            key={`${g.src || "img"}-${i}`}
+            className="keen-slider__slide relative overflow-hidden rounded-xl bg-white/5"
+            // Aspect ratio mais “cinema” (parecido com o que você mostrou).
+            // Se preferir 4/3, troque para "4 / 3".
+            style={{ aspectRatio: "16 / 9" }}
           >
-            <Image
-              src={g.src}
-              alt={g.alt || `Imagem ${idx + 1} do ${project.name}`}
-              fill
-              className="object-contain"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
+            {g.src ? (
+              <Image
+                src={g.src}
+                alt={g.alt || `Imagem ${i + 1}`}
+                fill
+                className="object-cover"
+                sizes="100vw"
+                priority={i === 0}
+              />
+            ) : (
+              <div className="absolute inset-0 grid place-items-center text-white/40">
+                sem imagem
+              </div>
+            )}
           </div>
         ))}
       </div>

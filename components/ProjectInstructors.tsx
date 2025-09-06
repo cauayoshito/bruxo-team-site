@@ -16,17 +16,17 @@ export default function ProjectInstructors({
       <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {list.map((p, idx) => (
           <div key={idx} className="border rounded-2xl overflow-hidden">
-            <div className="aspect-[4/3] overflow-hidden bg-white/5">
+            <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
               {p.image ? (
                 <Image
                   src={p.image}
                   alt={p.name}
-                  width={800}
-                  height={600}
-                  className="w-full h-full object-cover"
-                  style={
-                    p.imagePos ? { objectPosition: p.imagePos } : undefined
-                  }
+                  fill
+                  className="object-cover"
+                  style={{
+                    objectPosition: p.imagePos ?? "center", // 🔑 aplica foco customizado
+                  }}
+                  sizes="(max-width:768px) 100vw, 400px"
                 />
               ) : (
                 <div className="w-full h-full grid place-items-center opacity-70 text-sm">

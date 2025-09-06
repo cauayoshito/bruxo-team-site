@@ -13,7 +13,8 @@ export default function SocialProjectsPage() {
         <h1 className="h1">Projetos Sociais</h1>
         <p className="p mt-3 max-w-3xl">
           Iniciativas comunitárias apoiadas pela Bruxo Team. Acesse a página de
-          cada projeto para ver a grade completa, a localização e como participar.
+          cada projeto para ver a grade completa, a localização e como
+          participar.
         </p>
 
         {PROJECTS.length === 0 ? (

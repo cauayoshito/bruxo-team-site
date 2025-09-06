@@ -1,14 +1,15 @@
 // components/UnitSchedule.tsx
 import { type ScheduleRow, type DayKey } from "@/data/units";
 
-const DAY_ORDER: DayKey[] = ["seg", "ter", "qua", "qui", "sex", "sab"];
+const DAY_ORDER: DayKey[] = ["seg", "ter", "qua", "qui", "sex", "sab", "dom"];
 const DAY_LABEL: Record<DayKey, string> = {
   seg: "Seg",
   ter: "Ter",
   qua: "Qua",
   qui: "Qui",
   sex: "Sex",
-  sab: "Sáb",
+  sab: "Sab",
+  dom: "Dom",
 };
 
 export default function UnitSchedule({ rows }: { rows: ScheduleRow[] }) {

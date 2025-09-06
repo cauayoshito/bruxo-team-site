@@ -1,10 +1,11 @@
 // data/projects.ts
-import type { ScheduleRow, Instructor } from "@/data/units";
+import type { ScheduleRow, Instructor, UnitSlug } from "@/data/units";
 
 export type ProjectSlug =
   | "alto-do-macaco"
   | "rua-da-ilha"
-  | "nova-brasilia-de-itapua";
+  | "nova-brasilia-de-itapua"
+  | "stella-maris-mma"; // novo
 
 export type ProjectDetail = {
   slug: ProjectSlug;
@@ -25,15 +26,31 @@ export type ProjectDetail = {
   }>;
   seo?: { title: string; description: string };
 
-  // 👇 adicionados para ficar igual unidade
+  parentUnit: UnitSlug; // de qual unidade é “filho”
+
   instructors?: Instructor[];
   schedule?: ScheduleRow[];
 };
 
+// normalização para buscar projetos por unidade
+function normalizeSlug(s?: string) {
+  return (s ?? "")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .trim();
+}
+
+export function getProjectsByParentUnit(unitSlug: UnitSlug): ProjectDetail[] {
+  const u = normalizeSlug(unitSlug);
+  return PROJECTS.filter((p) => normalizeSlug(p.parentUnit) === u);
+}
+
 export const PROJECTS: ProjectDetail[] = [
   {
     slug: "alto-do-macaco",
-    name: "Projeto Social — Alto do Macaco",
+    name: "Rato de Tatame",
+    parentUnit: "itapua",
     description: "Projeto social do núcleo Alto do Macaco.",
     address: "2ª Travessa 17 de Setembro, 12 — Itapuã",
     city: "Salvador",
@@ -46,7 +63,6 @@ export const PROJECTS: ProjectDetail[] = [
       title: "Projeto Social — Alto do Macaco",
       description: "Conheça o projeto social Alto do Macaco da Bruxo Team.",
     },
-    // horários passados por você
     schedule: [
       { day: "seg", label: "Kids", time: "18:00" },
       { day: "seg", label: "Kids", time: "19:00" },
@@ -61,9 +77,13 @@ export const PROJECTS: ProjectDetail[] = [
       { day: "qui", label: "Mista", time: "09:00" },
       { day: "qui", label: "Competição", time: "18:00" },
     ],
-    // preencha quando tiver as fotos da equipe
     instructors: [
-      { name: "Lucas Ratto", role: "Professor", image: "/rato.jpg" },
+      {
+        name: "Lucas Ratto",
+        role: "Professor",
+        image: "/rato.jpg",
+        imagePos: "top center",
+      },
     ],
     gallery: [
       { src: "/alto.jpg", alt: "Aula no Alto do Macaco" },
@@ -75,7 +95,8 @@ export const PROJECTS: ProjectDetail[] = [
 
   {
     slug: "rua-da-ilha",
-    name: "Projeto Social — Rua da Ilha",
+    name: "Armindo Biriba",
+    parentUnit: "itapua",
     description: "Projeto social do núcleo Rua da Ilha (Estação Cidadania).",
     address: "Rua da Ilha, 374 — Itapuã",
     city: "Salvador",
@@ -88,7 +109,6 @@ export const PROJECTS: ProjectDetail[] = [
       title: "Projeto Social — Rua da Ilha",
       description: "Conheça o projeto social Rua da Ilha da Bruxo Team.",
     },
-    // seg & qua 19–21
     schedule: [
       { day: "seg", label: "Mista", time: "19:00" },
       { day: "seg", label: "Mista", time: "20:00" },
@@ -99,19 +119,20 @@ export const PROJECTS: ProjectDetail[] = [
       { name: "Tiago Ferreira", role: "Mestre", image: "/bruxo.jpeg" },
     ],
     gallery: [
-      { src: "/x.jpeg", alt: "Aula no Alto do Macaco" },
-      { src: "/p2.jpeg", alt: "Aula no Alto do Macaco" },
+      { src: "/x.jpeg", alt: "Aula na Rua da Ilha" },
+      { src: "/p2.jpeg", alt: "Aula na Rua da Ilha" },
     ],
   },
 
   {
     slug: "nova-brasilia-de-itapua",
-    name: "Projeto Social — Nova Brasília de Itapuã",
+    name: "Chokito Matriz BJJ",
+    parentUnit: "itapua",
     description: "Projeto social do núcleo Nova Brasília de Itapuã.",
     address: "Travessa Primeiro de Novembro, 1-69 — Nova Brasília de Itapuã",
     city: "Salvador",
     state: "BA",
-    whatsapp: "5571991843706",
+    whatsapp: "5571992006509",
     instagram: "https://instagram.com/bruxoteam_novabrasiliadeitapua",
     heroImage: "/c2.jpeg",
     mapQuery:
@@ -121,7 +142,6 @@ export const PROJECTS: ProjectDetail[] = [
       description:
         "Conheça o projeto social Nova Brasília de Itapuã da Bruxo Team.",
     },
-    // seg a qua: 20–21 Kids, 21–22 Mista
     schedule: [
       { day: "seg", label: "Kids", time: "20:00" },
       { day: "seg", label: "Mista", time: "21:00" },
@@ -132,8 +152,52 @@ export const PROJECTS: ProjectDetail[] = [
       { name: "Matheus Andrade", role: "Professor", image: "/cho.jpg" },
     ],
     gallery: [
-      { src: "/c.jpeg", alt: "Aula no Alto do Macaco" },
-      { src: "/c2.jpeg", alt: "Aula no Alto do Macaco" },
+      { src: "/c.jpeg", alt: "Aula em Nova Brasília de Itapuã" },
+      { src: "/c2.jpeg", alt: "Aula em Nova Brasília de Itapuã" },
+    ],
+  },
+
+  {
+    slug: "stella-maris-mma",
+    name: "Stella Maris 2",
+    parentUnit: "matriz",
+    description:
+      "Treinos de MMA e Submission em Stella Maris. Escolha este núcleo para ver informações completas.",
+    address: "Rua Agnaldo Azevedo, 208 — Stella Maris",
+    city: "Salvador",
+    state: "BA",
+    whatsapp: "5571984790990", // Mestre Felipe Leão
+    instagram: "https://www.instagram.com/bruxoteam_stella2",
+    heroImage: "/leao.jpg",
+    mapQuery: "Rua Agnaldo Azevedo, 208, Stella Maris, Salvador - BA",
+    seo: {
+      title: "Núcleo Stella Maris — MMA & Submission",
+      description:
+        "Treinos de MMA (seg/qua/sex 7h; sáb/dom 8–9h) e Submission (seg/qua 19h) em Stella Maris.",
+    },
+    schedule: [
+      { day: "seg", label: "MMA", time: "07:00" },
+      { day: "qua", label: "MMA", time: "07:00" },
+      { day: "sex", label: "MMA", time: "07:00" },
+
+      { day: "seg", label: "No-Gi (sem kimono)", time: "19:00" },
+      { day: "qua", label: "No-Gi (sem kimono)", time: "19:00" },
+
+      { day: "sab", label: "MMA", time: "08:00–09:00" },
+      { day: "dom", label: "MMA", time: "08:00–09:00" },
+    ],
+    instructors: [
+      {
+        name: "Felipe Leão",
+        role: "Mestre",
+        image: "/felipe.jpg",
+      },
+    ],
+    gallery: [
+      {
+        src: "/leao.jpg",
+        alt: "Treino no núcleo Stella Maris",
+      },
     ],
   },
 ];
