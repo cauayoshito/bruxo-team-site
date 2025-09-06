@@ -25,7 +25,7 @@ export default function Page({ params }: Props) {
           ...unit,
           name: "Bruxo Team Matriz",
           subtitle:
-            unit.subtitle ??
+            unit.description ??
             "Unidade Stella Maris da Bruxo Team. Clique para ver informações completas.",
         }
       : unit;
