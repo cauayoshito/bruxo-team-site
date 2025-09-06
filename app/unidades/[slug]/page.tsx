@@ -1,6 +1,9 @@
 // app/unidades/[slug]/page.tsx
 import { notFound } from "next/navigation";
 import type { Route } from "next";
+import Link from "next/link";
+import Image from "next/image";
+
 import { UNITS_INDEX, type UnitSlug } from "@/data/units";
 import { getProjectsByParentUnit } from "@/data/projects";
 import UnitCard from "@/components/UnitCard";
@@ -31,7 +34,7 @@ export default function Page({ params }: Props) {
         }
       : unit;
 
-  const sedeHref = (`/unidades/${unit.slug}/detalhes` as Route);
+  const sedeHref = `/unidades/${unit.slug}/detalhes` as Route;
 
   return (
     <main>
@@ -44,17 +47,12 @@ export default function Page({ params }: Props) {
       <section className="container py-10">
         <h2 className="h2">Núcleos</h2>
         <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* card da própria unidade (leva para a página completa da unidade) */}
+          {/* Card da própria unidade (leva para a página completa da unidade) */}
           <UnitCard unit={sedeCardData as any} hrefOverride={sedeHref} variant="preview" />
 
-          {/* cards dos filhos */}
+          {/* Cards dos filhos */}
           {childProjects.map((project) => {
-            // Itapuã → projetos; demais (ex.: Stella Maris/“matriz”) → núcleos
-            const href = (unit.slug === "itapua"
-              ? `/projetos/${project.slug}`
-              : `/nucleos/${project.slug}`) as Route;
-
-            // garante breve descrição no card (se faltar)
+            // Breve descrição caso falte
             const projectForCard = {
               ...project,
               description:
@@ -62,12 +60,43 @@ export default function Page({ params }: Props) {
                 "Selecione para ver horários, instrutores, galeria e contato.",
             };
 
+            // Itapuã → PROJETOS (rota /projetos/[slug])
+            if (unit.slug === "itapua") {
+              const href = `/projetos/${project.slug}` as Route;
+              return (
+                <article key={project.slug} className="rounded-2xl bg-white/5 p-3 hover:bg-white/10 transition">
+                  <Link href={href} className="block">
+                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-white/5">
+                      {project.heroImage ? (
+                        <Image
+                          src={project.heroImage}
+                          alt={project.name}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width:768px) 100vw, 400px"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 grid place-items-center text-white/40">
+                          sem imagem
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-3">
+                      <h3 className="text-lg font-semibold leading-snug">{project.name}</h3>
+                      {projectForCard.description && (
+                        <p className="text-sm text-white/70 mt-1">
+                          {projectForCard.description}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                </article>
+              );
+            }
+
+            // Demais unidades (ex.: Matriz) → NÚCLEOS (rota padrão interna do ProjectCard)
             return (
-              <ProjectCard
-                key={project.slug}
-                project={projectForCard as any}
-                hrefOverride={href}
-              />
+              <ProjectCard key={project.slug} project={projectForCard as any} />
             );
           })}
         </div>
