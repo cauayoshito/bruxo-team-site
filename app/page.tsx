@@ -20,7 +20,7 @@ export default function Page() {
         <h2 className="h2">Nossas Unidades</h2>
         <div className="mt-8 grid md:grid-cols-3 gap-6">
           {ordered.map((u) => (
-            <UnitCard key={u.slug} unit={u} variant="preview" />
+            <UnitCard key={u.slug} unit={u} />
           ))}
         </div>
       </section>
