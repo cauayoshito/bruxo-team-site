@@ -1,9 +1,8 @@
 // components/ProjectCard.tsx
-// Card padronizado para projetos E também para a "sede" (unidade) via hrefOverride.
+// Card padronizado para projetos e também para a "sede" (unidade) via hrefOverride.
 import Link from "next/link";
 import Image from "next/image";
-import type { ProjectDetail } from "@/data/projects";
-import { FaInstagram } from "react-icons/fa"; // Ícone oficial do Instagram
+import type { UrlObject } from "url";
 
 type MinimalProject = {
   slug: string;
@@ -15,18 +14,22 @@ type MinimalProject = {
 };
 
 type Props = {
-  project: ProjectDetail | MinimalProject;
-  /** Quando definido, o card aponta para este href (ex.: /unidades/itapua/detalhes) */
+  project: MinimalProject;
+  /** Quando definido, o card aponta para este href (ex.: "/projetos/stella-maris-mma" ou "/unidades/itapua/detalhes") */
   hrefOverride?: string;
 };
 
 export default function ProjectCard({ project, hrefOverride }: Props) {
-  const href = hrefOverride ?? `/nucleos/${project.slug}`;
+  // Para evitar o erro com "typedRoutes" do Next, passamos um UrlObject no href
+  const hrefObj: UrlObject = hrefOverride
+    ? { pathname: hrefOverride }
+    : { pathname: `/nucleos/${project.slug}` };
+
   const cover = project.heroImage;
 
   return (
     <div className="rounded-2xl bg-white/5 p-3 hover:bg-white/10 transition">
-      <Link href={href} className="block">
+      <Link href={hrefObj} className="block">
         <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-white/5">
           {cover && (
             <Image
@@ -35,9 +38,11 @@ export default function ProjectCard({ project, hrefOverride }: Props) {
               fill
               className="object-cover"
               sizes="(max-width:768px) 100vw, 400px"
+              priority={false}
             />
           )}
         </div>
+
         <div className="mt-3">
           <h3 className="text-lg font-semibold leading-snug">{project.name}</h3>
           {project.description && (
@@ -46,33 +51,14 @@ export default function ProjectCard({ project, hrefOverride }: Props) {
         </div>
       </Link>
 
-      {/* Ações (WhatsApp / Instagram), padronizados */}
-      <div className="mt-3 flex items-center gap-2">
-        {project.whatsapp && (
-          <Link
-            href={`https://wa.me/${project.whatsapp.replace(/\D/g, "")}`}
-            target="_blank"
-            className="rounded-md bg-red-600 hover:bg-red-500 px-3 py-1.5 text-sm font-medium text-white"
-          >
-            WhatsApp
-          </Link>
-        )}
-
-        {project.instagram && (
-          <Link
-            href={project.instagram}
-            target="_blank"
-            aria-label="Instagram"
-            className="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-white"
-            style={{
-              background:
-                "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)",
-            }}
-          >
-            <FaInstagram className="mr-1 h-4 w-4" />
-            Instagram
-          </Link>
-        )}
+      {/* Ação principal no card (home/listas): apenas "Ver informações" */}
+      <div className="mt-3">
+        <Link
+          href={hrefObj}
+          className="inline-block rounded-lg bg-white/10 hover:bg-white/15 px-3 py-1.5 text-sm font-medium"
+        >
+          Ver informações
+        </Link>
       </div>
     </div>
   );
