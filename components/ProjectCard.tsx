@@ -1,64 +1,86 @@
-// components/ProjectCard.tsx
-// Card padronizado para projetos e também para a "sede" (unidade) via hrefOverride.
-import Link from "next/link";
 import Image from "next/image";
-import type { UrlObject } from "url";
-
-type MinimalProject = {
-  slug: string;
-  name: string;
-  description?: string;
-  heroImage?: string;
-  whatsapp?: string;
-  instagram?: string;
-};
+import Link from "next/link";
+import type { ProjectDetail } from "@/data/projects";
 
 type Props = {
-  project: MinimalProject;
-  /** Quando definido, o card aponta para este href (ex.: "/projetos/stella-maris-mma" ou "/unidades/itapua/detalhes") */
-  hrefOverride?: string;
+  project: ProjectDetail;
+  /** "preview" = só “Ver informações” | "full" = com WhatsApp/Instagram também */
+  variant?: "preview" | "full";
 };
 
-export default function ProjectCard({ project, hrefOverride }: Props) {
-  // Para evitar o erro com "typedRoutes" do Next, passamos um UrlObject no href
-  const hrefObj: UrlObject = hrefOverride
-    ? { pathname: hrefOverride }
-    : { pathname: `/nucleos/${project.slug}` };
-
-  const cover = project.heroImage;
+export default function ProjectCard({ project, variant = "full" }: Props) {
+  const href = `/projetos/${project.slug}`;
+  const showFull = variant === "full";
 
   return (
     <div className="rounded-2xl bg-white/5 p-3 hover:bg-white/10 transition">
-      <Link href={hrefObj} className="block">
+      <Link href={href as any} className="block">
         <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-white/5">
-          {cover && (
+          {project.heroImage ? (
             <Image
-              src={cover}
+              src={project.heroImage}
               alt={project.name}
               fill
               className="object-cover"
               sizes="(max-width:768px) 100vw, 400px"
-              priority={false}
             />
-          )}
-        </div>
-
-        <div className="mt-3">
-          <h3 className="text-lg font-semibold leading-snug">{project.name}</h3>
-          {project.description && (
-            <p className="text-sm text-white/70 mt-1">{project.description}</p>
+          ) : (
+            <div className="absolute inset-0 grid place-items-center text-white/40">
+              sem imagem
+            </div>
           )}
         </div>
       </Link>
 
-      {/* Ação principal no card (home/listas): apenas "Ver informações" */}
       <div className="mt-3">
-        <Link
-          href={hrefObj}
-          className="inline-block rounded-lg bg-white/10 hover:bg-white/15 px-3 py-1.5 text-sm font-medium"
-        >
-          Ver informações
-        </Link>
+        <h3 className="text-lg font-semibold">{project.name}</h3>
+        {project.description && (
+          <p className="text-sm opacity-80 mt-1">{project.description}</p>
+        )}
+
+        <div className="mt-3 flex gap-2 flex-wrap">
+          {showFull ? (
+            <>
+              {project.whatsapp && (
+                <a
+                  href={`https://wa.me/${project.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-md bg-red-600 hover:bg-red-500 px-3 py-1.5 text-sm font-medium text-white"
+                >
+                  WhatsApp
+                </a>
+              )}
+              {project.instagram && (
+                <a
+                  href={project.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-md px-3 py-1.5 text-sm font-medium text-white"
+                  style={{
+                    background:
+                      "linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)",
+                  }}
+                >
+                  Instagram
+                </a>
+              )}
+              <Link
+                href={href as any}
+                className="rounded-md border border-white/15 px-3 py-1.5 text-sm font-medium text-white/90 hover:bg-white/10"
+              >
+                Ver informações
+              </Link>
+            </>
+          ) : (
+            <Link
+              href={href as any}
+              className="rounded-md border border-white/15 px-3 py-1.5 text-sm font-medium text-white/90 hover:bg-white/10"
+            >
+              Ver informações
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
