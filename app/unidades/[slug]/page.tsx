@@ -18,13 +18,14 @@ export default function Page({ params }: Props) {
   const displayTitle =
     unit.slug === "matriz" ? "Unidade Stella Maris" : unit.name;
 
-  // No HUB da matriz, o card da própria sede deve aparecer como "Bruxo Team Matriz"
+  // No HUB da matriz, o card da própria sede aparece como “Bruxo Team Matriz”
+  // e com uma descrição curta de preview
   const sedeCardData =
     unit.slug === "matriz"
       ? {
           ...unit,
           name: "Bruxo Team Matriz",
-          subtitle:
+          description:
             unit.description ??
             "Unidade Stella Maris da Bruxo Team. Clique para ver informações completas.",
         }
@@ -41,13 +42,14 @@ export default function Page({ params }: Props) {
       <section className="container py-10">
         <h2 className="h2">Núcleos</h2>
         <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* card da própria unidade (leva para a página completa da unidade) */}
+          {/* Card da própria unidade → leva para a página completa da unidade */}
           <UnitCard
             unit={sedeCardData as any}
             hrefOverride={`/unidades/${unit.slug}/detalhes`}
+            variant="preview"
           />
 
-          {/* cards dos filhos */}
+          {/* Cards dos filhos */}
           {childProjects.map((project) => {
             // Itapuã → projetos; demais (ex.: Stella Maris/“matriz”) → núcleos
             const href =
@@ -68,6 +70,7 @@ export default function Page({ params }: Props) {
                 key={project.slug}
                 project={projectForCard as any}
                 hrefOverride={href}
+                variant="preview"
               />
             );
           })}
