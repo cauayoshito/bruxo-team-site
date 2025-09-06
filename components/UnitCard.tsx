@@ -1,20 +1,32 @@
+// components/UnitCard.tsx
 import Image from "next/image";
 import Link from "next/link";
+import type { Route } from "next";
 import type { UnitDetail } from "@/data/units";
+import { waLink } from "@/lib/whatsapp";
 
 type Props = {
   unit: UnitDetail;
-  /** "preview" = home (só CTA Ver informações) | "full" = páginas internas com botões */
-  variant?: "preview" | "full";
+  /** sobrescreve o href padrão do card */
+  hrefOverride?: Route;
+  /** preview: apenas “Ver informações”; default: CTAs (Whats/IG) */
+  variant?: "preview" | "default";
 };
 
-export default function UnitCard({ unit, variant = "full" }: Props) {
-  const href = `/unidades/${unit.slug}`;
-  const showFull = variant === "full";
+export default function UnitCard({
+  unit,
+  hrefOverride,
+  variant = "default",
+}: Props) {
+  const href = (hrefOverride ?? (`/unidades/${unit.slug}` as Route)) as Route;
+
+  const waHref = unit.whatsapp
+    ? waLink(unit.whatsapp, `Olá! Gostaria de informações da ${unit.name}.`)
+    : null;
 
   return (
     <article className="rounded-2xl bg-white/5 overflow-hidden">
-      <Link href={href as any} className="block">
+      <Link href={href} className="block">
         <div className="relative w-full" style={{ aspectRatio: "4 / 3" }}>
           {unit.heroImage ? (
             <Image
@@ -39,16 +51,20 @@ export default function UnitCard({ unit, variant = "full" }: Props) {
           <p className="text-sm opacity-80 mt-1">{unit.description}</p>
         )}
 
-        {/* CTAs */}
+        {/* Rodapé do card */}
         <div className="mt-3 flex gap-2 flex-wrap">
-          {showFull ? (
+          {variant === "preview" ? (
+            <Link href={href} className="btn-secondary">
+              Ver informações
+            </Link>
+          ) : (
             <>
-              {unit.whatsapp && (
+              {waHref && (
                 <a
-                  href={`https://wa.me/${unit.whatsapp}`}
+                  href={waHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-md bg-red-600 hover:bg-red-500 px-3 py-1.5 text-sm font-medium text-white"
+                  className="btn-primary"
                 >
                   WhatsApp
                 </a>
@@ -58,29 +74,12 @@ export default function UnitCard({ unit, variant = "full" }: Props) {
                   href={unit.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-md px-3 py-1.5 text-sm font-medium text-white"
-                  style={{
-                    background:
-                      "linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)",
-                  }}
+                  className="btn-secondary"
                 >
                   Instagram
                 </a>
               )}
-              <Link
-                href={href as any}
-                className="rounded-md border border-white/15 px-3 py-1.5 text-sm font-medium text-white/90 hover:bg-white/10"
-              >
-                Ver informações
-              </Link>
             </>
-          ) : (
-            <Link
-              href={href as any}
-              className="rounded-md border border-white/15 px-3 py-1.5 text-sm font-medium text-white/90 hover:bg-white/10"
-            >
-              Ver informações
-            </Link>
           )}
         </div>
       </div>
